@@ -3,9 +3,6 @@ import { updateSender } from "./messages.js"
 
 export const receiveTokenRequest = async (message, port, neighbours, pendingRequests, tokenHere, inCriticalSection) => {
     const updatedSender = updateSender(port, message)
-    console.log(`
-        updated sender: ${JSON.stringify(updatedSender)}
-    `)
     propagateTokenRequest(updatedSender, neighbours)
     if (tokenHere && inCriticalSection === false)
     {
@@ -21,9 +18,9 @@ export const receiveTokenRequest = async (message, port, neighbours, pendingRequ
 export const receiveToken = async (message, port, pendingRequests, tokenHere) => {
     if (message.elected == port)
     {
-        // enter critical section
         console.log(`
-            token request serviced: entering critical section
+            token received: ${JSON.stringify(message)}
+            entering critical section
         `)
         return tokenHere
     }

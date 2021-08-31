@@ -8,7 +8,7 @@ export const broadcastTokenRequest = async (port, neighbours) => {
     const broadcasts = neighbours.map((neighbour) => {
         const url = `http://localhost:${neighbour}/receive-token-request`
         console.log(`
-            url: ${url}
+            broadcasting token request to neighbour: ${url}
         `)
         return axios.post(url, updatedMessage)
     })
@@ -18,13 +18,10 @@ export const broadcastTokenRequest = async (port, neighbours) => {
 export const propagateTokenRequest = async (message, neighbours) => {
     const targets = findNewTargets(neighbours, message)
     const updatedMessage = markAsSeen(targets, message)
-    console.log(`
-        updated seen: ${JSON.stringify(updatedMessage)}
-    `)
     const broadcasts = targets.map((target) => {
         const url = `http://localhost:${target}/receive-token-request`
         console.log(`
-            url: ${url}
+            propagating token request to neighbour: ${url}
         `)
         return axios.post(url, updatedMessage)
     })
@@ -57,8 +54,9 @@ const getTarget = (pendingRequests, message) => {
         return pendingRequests[key].origin == message.elected
     })[0]
     // delete old request now as it is getting serviced
+    delete pendingRequests[target]
     console.log(`
-        transmission target: ${target}
+        updating pending requests ${JSON.stringify(pendingRequests)}
     `)
     return target
 }

@@ -24,7 +24,9 @@ app.use(express.json())
 app.get('/enter-critical-section', async (req, res) => {
     if (tokenHere)
     {
-
+        console.log(`
+            process already owns the token: entering critical section
+        `)
     }
     else
     {
@@ -37,14 +39,14 @@ app.post('/receive-token-request', async (req, res) => {
     const message = {
         ...req.body
     }
+    console.log(`
+        received token request from ${message.info.sender}
+    `)
     pendingRequests = updatePendingRequests(pendingRequests, message)
     console.log(`
-        updated pending: ${JSON.stringify(pendingRequests)}
+        updated pending requests: ${JSON.stringify(pendingRequests)}
     `)
     tokenHere = await receiveTokenRequest(message, port, neighbours, pendingRequests, tokenHere, inCriticalSection)
-    console.log(`
-        updated tokenHere: ${tokenHere}
-    `)
     res.sendStatus(200)
 })
 
@@ -53,13 +55,7 @@ app.post('/receive-token', async (req, res) => {
     const message = {
         ...req.body
     }
-    console.log(`
-        token received: ${JSON.stringify(message)}
-    `)
     tokenHere = await receiveToken(message, port, pendingRequests, tokenHere)
-    console.log(`
-        updated tokenHere: ${tokenHere}
-    `)
     res.sendStatus(200)
 })
 
