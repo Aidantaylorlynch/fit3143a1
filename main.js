@@ -4,6 +4,7 @@ import { getRunningPort, getNeighbours, getTokenHereValue } from './helpers/star
 import { broadcastTokenRequest } from './helpers/broadcast.js'
 import { receiveToken, receiveTokenRequest } from './helpers/receive.js'
 import { initialisePendingRequests, updatePendingRequests  } from './helpers/requests.js'
+import { enterCriticalSection } from './helpers/critical.js'
 
 const app = express()
 const port = getRunningPort(process.argv)
@@ -27,6 +28,7 @@ app.get('/enter-critical-section', async (req, res) => {
         console.log(`
             process already owns the token: entering critical section
         `)
+        enterCriticalSection(port)
     }
     else
     {

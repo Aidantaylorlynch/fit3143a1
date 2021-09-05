@@ -1,4 +1,5 @@
 import { forwardToken, propagateTokenRequest, transmitToken } from "./broadcast.js"
+import { enterCriticalSection } from "./critical.js"
 import { updateSender } from "./messages.js"
 
 export const receiveTokenRequest = async (message, port, neighbours, pendingRequests, tokenHere, inCriticalSection) => {
@@ -22,6 +23,7 @@ export const receiveToken = async (message, port, pendingRequests, tokenHere) =>
             token received: ${JSON.stringify(message)}
             entering critical section
         `)
+        enterCriticalSection(port)
         return tokenHere
     }
     else
